@@ -2,11 +2,11 @@
 pragma solidity ^0.8.20;
 
 /**
- * @title SavePointItems (ERC-1155)
- * @notice ERC-1155 contract to mint Item Boosts and Resource Packs for SavePoint: Earth
- * @dev Owner-controlled minting, per-token metadata, optional maxSupply, one-time claim, pause, burn,
- *      and optional public minting that charges a mint fee in IDRT (or any ERC20 paymentToken).
- */
+* @title SavePointItems (ERC-1155)
+* @notice ERC-1155 contract to mint Item Boosts and Resource Packs for SavePoint: Earth
+* @dev Owner-controlled minting, per-token metadata, optional maxSupply, one-time claim, pause, burn,
+*      and optional public minting that charges a mint fee in IDRT (or any ERC20 paymentToken).
+*/
 
 import "@openzeppelin/contracts/token/ERC1155/ERC1155.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
@@ -54,10 +54,6 @@ contract SavePointItems is ERC1155, Ownable, Pausable, ReentrancyGuard {
     event FeeCollectorUpdated(address indexed oldCollector, address indexed newCollector);
     event MintFeeUpdated(uint256 oldFee, uint256 newFee);
 
-    /// @param initialOwner owner address for Ownable
-    /// @param baseURI base URI for ERC1155 metadata (can contain {id})
-    /// @param _paymentToken payment token address (IDRT)
-    /// @param _feeCollector address that receives fees
     constructor(address initialOwner, string memory baseURI, address _paymentToken, address _feeCollector)
         ERC1155(baseURI)
         Ownable(initialOwner)
@@ -76,10 +72,6 @@ contract SavePointItems is ERC1155, Ownable, Pausable, ReentrancyGuard {
 
     // -------------------- Item Type Management --------------------
 
-    /// @notice Create a new item type and assign a token id
-    /// @param _maxSupply maximum supply (0 = unlimited)
-    /// @param uri_ metadata URI for this token id
-    /// @return newId newly created token id
     function createItemType(uint256 _maxSupply, string calldata uri_) external onlyOwner returns (uint256 newId) {
         require(bytes(uri_).length > 0, "uri required");
 
@@ -93,28 +85,24 @@ contract SavePointItems is ERC1155, Ownable, Pausable, ReentrancyGuard {
         emit TokenURISet(newId, uri_);
     }
 
-    /// @notice Set max supply for a token id
     function setMaxSupply(uint256 id, uint256 _max) external onlyOwner {
         require(id > 0 && bytes(_tokenURI[id]).length > 0, "invalid id");
         maxSupply[id] = _max;
         emit MaxSupplySet(id, _max);
     }
 
-    /// @notice Set token URI for a given id
     function setTokenURI(uint256 id, string calldata uri_) external onlyOwner {
         require(id > 0, "invalid id");
         _tokenURI[id] = uri_;
         emit TokenURISet(id, uri_);
     }
 
-    /// @notice Set base URI fallback
     function setBaseURI(string calldata newuri) external onlyOwner {
         _setURI(newuri);
     }
 
     // -------------------- Minting (Owner) --------------------
 
-    /// @notice Mint tokens (owner only)
     function mint(address to, uint256 id, uint256 amount) external onlyOwner whenNotPaused nonReentrant {
         require(to != address(0), "to zero");
         require(amount > 0, "amount zero");
@@ -130,11 +118,10 @@ contract SavePointItems is ERC1155, Ownable, Pausable, ReentrancyGuard {
         emit ItemMinted(to, id, amount);
     }
 
-    /// @notice Batch mint tokens (owner only)
     function mintBatch(address to, uint256[] calldata ids, uint256[] calldata amounts) external onlyOwner whenNotPaused nonReentrant {
         require(to != address(0), "to zero");
         require(ids.length == amounts.length, "len mismatch");
-        uint256 totalCost = 0; // not used for owner mint
+
         for (uint256 i = 0; i < ids.length; i++) {
             require(bytes(_tokenURI[ids[i]]).length > 0, "token type not exist");
             uint256 max = maxSupply[ids[i]];
@@ -143,11 +130,11 @@ contract SavePointItems is ERC1155, Ownable, Pausable, ReentrancyGuard {
             }
             _totalSupply[ids[i]] += amounts[i];
         }
+
         _mintBatch(to, ids, amounts, "");
         emit ItemBatchMinted(to, ids, amounts);
     }
 
-    /// @notice Airdrop (mint to many recipients, owner only)
     function mintAirdrop(address[] calldata recipients, uint256 id, uint256 amountEach) external onlyOwner whenNotPaused nonReentrant {
         require(recipients.length > 0, "no recipients");
         require(bytes(_tokenURI[id]).length > 0, "token type not exist");
@@ -168,7 +155,6 @@ contract SavePointItems is ERC1155, Ownable, Pausable, ReentrancyGuard {
 
     // -------------------- Public Minting (fee-based) --------------------
 
-    /// @notice Public minting: anyone can mint to themselves by paying mintFee * amount in paymentToken
     function publicMint(uint256 id, uint256 amount) external whenNotPaused nonReentrant {
         require(amount > 0, "amount zero");
         require(bytes(_tokenURI[id]).length > 0, "token type not exist");
@@ -186,9 +172,9 @@ contract SavePointItems is ERC1155, Ownable, Pausable, ReentrancyGuard {
         emit ItemMinted(msg.sender, id, amount);
     }
 
-    /// @notice Public batch minting
     function publicMintBatch(uint256[] calldata ids, uint256[] calldata amounts) external whenNotPaused nonReentrant {
         require(ids.length == amounts.length, "len mismatch");
+
         uint256 totalUnits = 0;
         for (uint256 i = 0; i < ids.length; i++) {
             require(bytes(_tokenURI[ids[i]]).length > 0, "token type not exist");
@@ -208,14 +194,12 @@ contract SavePointItems is ERC1155, Ownable, Pausable, ReentrancyGuard {
 
     // -------------------- Claiming --------------------
 
-    /// @notice Owner sets how many one-time claims are available for a token id
     function setClaimSupply(uint256 id, uint256 supply) external onlyOwner {
         require(bytes(_tokenURI[id]).length > 0, "token type not exist");
         claimSupplyLeft[id] = supply;
         emit ClaimSupplySet(id, supply);
     }
 
-    /// @notice Claim one unit of a token id (one-time per address)
     function claim(uint256 id) external whenNotPaused nonReentrant {
         require(claimSupplyLeft[id] > 0, "no claim supply");
         require(!hasClaimed[msg.sender][id], "already claimed");
@@ -237,7 +221,6 @@ contract SavePointItems is ERC1155, Ownable, Pausable, ReentrancyGuard {
 
     // -------------------- Burning --------------------
 
-    /// @notice Burn tokens (owner or approved)
     function burn(address account, uint256 id, uint256 value) external whenNotPaused {
         require(account == msg.sender || isApprovedForAll(account, msg.sender), "not owner nor approved");
         _burn(account, id, value);
@@ -246,7 +229,6 @@ contract SavePointItems is ERC1155, Ownable, Pausable, ReentrancyGuard {
         emit ItemBurned(account, id, value);
     }
 
-    /// @notice Batch burn tokens
     function burnBatch(address account, uint256[] calldata ids, uint256[] calldata values) external whenNotPaused {
         require(account == msg.sender || isApprovedForAll(account, msg.sender), "not owner nor approved");
         _burnBatch(account, ids, values);
@@ -259,18 +241,15 @@ contract SavePointItems is ERC1155, Ownable, Pausable, ReentrancyGuard {
 
     // -------------------- Views --------------------
 
-    /// @notice Returns metadata URI for token id
     function uri(uint256 id) public view virtual override returns (string memory) {
         if (bytes(_tokenURI[id]).length > 0) return _tokenURI[id];
         return super.uri(id);
     }
 
-    /// @notice Returns total minted minus burned for token id
     function totalSupply(uint256 id) external view returns (uint256) {
         return _totalSupply[id];
     }
 
-    /// @notice Returns whether a token id exists (has uri or supply)
     function exists(uint256 id) external view returns (bool) {
         return _totalSupply[id] > 0 || bytes(_tokenURI[id]).length > 0;
     }
@@ -287,11 +266,17 @@ contract SavePointItems is ERC1155, Ownable, Pausable, ReentrancyGuard {
 
     // -------------------- Hooks --------------------
 
-    /// @dev Prevent token transfers while paused and keep compatibility with ERC1155 internals
-    function _update(address from, address to, uint256[] memory ids, uint256[] memory values) internal virtual override {
-        // block transfers while paused
+    // Parameter names omitted to avoid compiler warnings about unused variables
+    function _beforeTokenTransfer(
+        address /*operator*/,
+        address /*from*/,
+        address /*to*/,
+        uint256[] memory /*ids*/,
+        uint256[] memory /*amounts*/,
+        bytes memory /*data*/
+    ) internal virtual {
         require(!paused(), "paused");
-        super._update(from, to, ids, values);
+        // No super call to avoid override issues
     }
 
     // -------------------- Payment & Fee Admin --------------------

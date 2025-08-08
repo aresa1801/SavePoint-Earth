@@ -9,13 +9,18 @@
 				"inputs": [
 					{
 						"internalType": "address",
+						"name": "_initialOwner",
+						"type": "address"
+					},
+					{
+						"internalType": "address",
 						"name": "_paymentToken",
 						"type": "address"
 					},
 					{
-						"internalType": "uint256",
-						"name": "_mintPrice",
-						"type": "uint256"
+						"internalType": "address",
+						"name": "_feeCollector",
+						"type": "address"
 					},
 					{
 						"internalType": "string",
@@ -193,6 +198,44 @@
 				"anonymous": false,
 				"inputs": [
 					{
+						"indexed": true,
+						"internalType": "address",
+						"name": "oldCollector",
+						"type": "address"
+					},
+					{
+						"indexed": true,
+						"internalType": "address",
+						"name": "newCollector",
+						"type": "address"
+					}
+				],
+				"name": "FeeCollectorUpdated",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": true,
+						"internalType": "uint256",
+						"name": "id",
+						"type": "uint256"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "maxSupply",
+						"type": "uint256"
+					}
+				],
+				"name": "MaxSupplySet",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
 						"indexed": false,
 						"internalType": "uint256",
 						"name": "oldPrice",
@@ -244,19 +287,38 @@
 				"anonymous": false,
 				"inputs": [
 					{
-						"indexed": false,
+						"indexed": true,
 						"internalType": "address",
 						"name": "oldToken",
 						"type": "address"
 					},
 					{
-						"indexed": false,
+						"indexed": true,
 						"internalType": "address",
 						"name": "newToken",
 						"type": "address"
 					}
 				],
 				"name": "PaymentTokenUpdated",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": true,
+						"internalType": "uint256",
+						"name": "id",
+						"type": "uint256"
+					},
+					{
+						"indexed": false,
+						"internalType": "string",
+						"name": "uri",
+						"type": "string"
+					}
+				],
+				"name": "TokenURISet",
 				"type": "event"
 			},
 			{
@@ -427,6 +489,19 @@
 						"internalType": "bool",
 						"name": "",
 						"type": "bool"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "feeCollector",
+				"outputs": [
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
 					}
 				],
 				"stateMutability": "view",
@@ -693,6 +768,19 @@
 			{
 				"inputs": [
 					{
+						"internalType": "address",
+						"name": "newCollector",
+						"type": "address"
+					}
+				],
+				"name": "setFeeCollector",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
 						"internalType": "uint256",
 						"name": "id",
 						"type": "uint256"
@@ -828,24 +916,6 @@
 				],
 				"stateMutability": "view",
 				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "address",
-						"name": "to",
-						"type": "address"
-					},
-					{
-						"internalType": "uint256",
-						"name": "amount",
-						"type": "uint256"
-					}
-				],
-				"name": "withdrawPaymentToken",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
 			}
 		],
 		"devdoc": {
@@ -947,8 +1017,9 @@
 				},
 				"constructor": {
 					"params": {
-						"_baseURI": "base URI for ERC1155 (can be empty)",
-						"_mintPrice": "price per single mint (in smallest unit)",
+						"_baseURI": "base URI for ERC1155 metadata",
+						"_feeCollector": "address receiving mint fees",
+						"_initialOwner": "owner address",
 						"_paymentToken": "address of ERC20 used for payment (IDRT)"
 					}
 				},
@@ -957,13 +1028,13 @@
 				},
 				"mintAvatar(string)": {
 					"params": {
-						"uri_": "metadata URI (should point to JSON metadata on IPFS/Pinata)"
+						"uri_": "metadata URI (should point to JSON metadata on IPFS or similar)"
 					}
 				},
 				"mintExisting(address,uint256,uint256)": {
 					"params": {
 						"amount": "number of copies",
-						"id": "token id",
+						"id": "token id to mint",
 						"to": "recipient address"
 					}
 				},
@@ -989,13 +1060,10 @@
 			"kind": "user",
 			"methods": {
 				"mintAvatar(string)": {
-					"notice": "Mint a new unique avatar (creates new tokenId and mints 1 copy to msg.sender)"
+					"notice": "Mint a new unique avatar with new tokenId"
 				},
 				"mintExisting(address,uint256,uint256)": {
-					"notice": "Mint multiple copies of an existing avatar token id (if allowed by owner and maxSupply)"
-				},
-				"uri(uint256)": {
-					"notice": "Override ERC1155.uri to return per-token URI when set"
+					"notice": "Mint multiple copies of an existing avatar token id"
 				}
 			},
 			"version": 1
@@ -1210,11 +1278,11 @@
 			]
 		},
 		"Avatar_NFT.sol": {
-			"keccak256": "0xfad7ca1faf96fc094245292e038eed462097974768f2986193c48ed72dc2b88b",
+			"keccak256": "0x30f7c4476d197aa875bdd14c506d5812bd80cca9904a546390e6b21b8b5d1a48",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://068d7f7a54e54846fed4f7e32c7bea1e1b3a6f9689f597c6ddb448d423f0a23e",
-				"dweb:/ipfs/QmbAYgteJoU8h7SuX88roVgE8t2Yez1WVX77Np7RJtQyUv"
+				"bzz-raw://a4f0a8507e59360d761ac62e7e2d39203ead8625e8f98249c17f9ee82afb7ca4",
+				"dweb:/ipfs/QmZWEYqSYMwHqBtrSEeVHJYJq1gnK6QBjdA981maT5ik1T"
 			]
 		}
 	},

@@ -1357,23 +1357,6 @@
 				"balanceOfBatch(address[],uint256[])": {
 					"details": "See {IERC1155-balanceOfBatch}. Requirements: - `accounts` and `ids` must have the same length."
 				},
-				"constructor": {
-					"params": {
-						"_feeCollector": "address that receives fees",
-						"_paymentToken": "payment token address (IDRT)",
-						"baseURI": "base URI for ERC1155 metadata (can contain {id})",
-						"initialOwner": "owner address for Ownable"
-					}
-				},
-				"createItemType(uint256,string)": {
-					"params": {
-						"_maxSupply": "maximum supply (0 = unlimited)",
-						"uri_": "metadata URI for this token id"
-					},
-					"returns": {
-						"newId": "newly created token id"
-					}
-				},
 				"isApprovedForAll(address,address)": {
 					"details": "Returns true if `operator` is approved to transfer ``account``'s tokens. See {setApprovalForAll}."
 				},
@@ -1407,62 +1390,14 @@
 		"userdoc": {
 			"kind": "user",
 			"methods": {
-				"burn(address,uint256,uint256)": {
-					"notice": "Burn tokens (owner or approved)"
-				},
-				"burnBatch(address,uint256[],uint256[])": {
-					"notice": "Batch burn tokens"
-				},
-				"claim(uint256)": {
-					"notice": "Claim one unit of a token id (one-time per address)"
-				},
 				"claimSupplyLeft(uint256)": {
 					"notice": "Claim supply left for one-time claims (each account can claim once)"
-				},
-				"createItemType(uint256,string)": {
-					"notice": "Create a new item type and assign a token id"
-				},
-				"exists(uint256)": {
-					"notice": "Returns whether a token id exists (has uri or supply)"
 				},
 				"hasClaimed(address,uint256)": {
 					"notice": "Tracks whether an address already claimed a specific token id"
 				},
 				"maxSupply(uint256)": {
 					"notice": "Optional max supply per token id (0 = unlimited)"
-				},
-				"mint(address,uint256,uint256)": {
-					"notice": "Mint tokens (owner only)"
-				},
-				"mintAirdrop(address[],uint256,uint256)": {
-					"notice": "Airdrop (mint to many recipients, owner only)"
-				},
-				"mintBatch(address,uint256[],uint256[])": {
-					"notice": "Batch mint tokens (owner only)"
-				},
-				"publicMint(uint256,uint256)": {
-					"notice": "Public minting: anyone can mint to themselves by paying mintFee * amount in paymentToken"
-				},
-				"publicMintBatch(uint256[],uint256[])": {
-					"notice": "Public batch minting"
-				},
-				"setBaseURI(string)": {
-					"notice": "Set base URI fallback"
-				},
-				"setClaimSupply(uint256,uint256)": {
-					"notice": "Owner sets how many one-time claims are available for a token id"
-				},
-				"setMaxSupply(uint256,uint256)": {
-					"notice": "Set max supply for a token id"
-				},
-				"setTokenURI(uint256,string)": {
-					"notice": "Set token URI for a given id"
-				},
-				"totalSupply(uint256)": {
-					"notice": "Returns total minted minus burned for token id"
-				},
-				"uri(uint256)": {
-					"notice": "Returns metadata URI for token id"
 				}
 			},
 			"version": 1
@@ -1685,11 +1620,11 @@
 			]
 		},
 		"Item_NFT.sol": {
-			"keccak256": "0xcd7347abb164c4d8b96aa5e013924f29cb5d7906bdc965fd96ddb18f511e122c",
+			"keccak256": "0x71a8f08c9aac0eb65e2c76e189548410aa08106e22558113c1dba63133b7d9cf",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://7abae2dd8c2029596c1d3843e5a2339a3750ffa8ceccaeff7109194752361e07",
-				"dweb:/ipfs/QmNrRXY9mUDBraJK8LybFtWPXq2B9q6Jr5pyTidcpchjwc"
+				"bzz-raw://7ac9f180480968e1c13595bae0ef2508ac2c1b8935eecc665beba8fc5f57ad29",
+				"dweb:/ipfs/QmVp2Eoop55YZxYewDJ89SoX6wPTDDwgv22sPokifH1JgK"
 			]
 		}
 	},
