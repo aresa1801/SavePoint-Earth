@@ -1,28 +1,49 @@
-REMIX DEFAULT WORKSPACE
+# 🌍 SavePoint: Earth
 
-Remix default workspace is present when:
-i. Remix loads for the very first time 
-ii. A new workspace is created with 'Default' template
-iii. There are no files existing in the File Explorer
+SavePoint: Earth is a Web3 gamified project developed by **Aresa Studio**, merging gaming, sustainability, and blockchain innovation.  
+Players take part in a futuristic battle between two opposing factions — The Environmentalists and The Polluters — each competing to shape the future of our planet.  
 
-This workspace contains 3 directories:
+Every mission and in-game action reflects a real-world environmental impact, powered by blockchain technology and verified through **CarbonFi** integration.
 
-1. 'contracts': Holds three contracts with increasing levels of complexity.
-2. 'scripts': Contains four typescript files to deploy a contract. It is explained below.
-3. 'tests': Contains one Solidity test file for 'Ballot' contract & one JS test file for 'Storage' contract.
+---
 
-SCRIPTS
+## 🎮 Project Overview
 
-The 'scripts' folder has four typescript files which help to deploy the 'Storage' contract using 'web3.js' and 'ethers.js' libraries.
+SavePoint: Earth transforms environmental awareness into an interactive digital experience.  
+Players can:
+- Choose a faction and complete eco-themed quests.
+- Collect and upgrade Avatar NFTs and Item NFTs.
+- Earn tokens through *Play-to-Impact* mechanics.
+- Support real sustainability initiatives through gameplay.
 
-For the deployment of any other contract, just update the contract name from 'Storage' to the desired contract and provide constructor arguments accordingly 
-in the file `deploy_with_ethers.ts` or  `deploy_with_web3.ts`
+The goal is to make climate action engaging and accessible to the youth — turning play into purpose.
 
-In the 'tests' folder there is a script containing Mocha-Chai unit tests for 'Storage' contract.
+---
 
-To run a script, right click on file name in the file explorer and click 'Run'. Remember, Solidity file must already be compiled.
-Output from script will appear in remix terminal.
+## 🧩 Core Features
 
-Please note, require/import is supported in a limited manner for Remix supported modules.
-For now, modules supported by Remix are ethers, web3, swarmgw, chai, multihashes, remix and hardhat only for hardhat.ethers object/plugin.
-For unsupported modules, an error like this will be thrown: '<module_name> module require is not supported by Remix IDE' will be shown.
+- Faction-Based Gameplay : Battle between two sides — Environmentalists vs Polluters.
+- NFT Integration : Default avatars can be upgraded or custom-made as NFTs.
+- Marketplace : Trade avatars, items, and reward assets.
+- Token Economy : Play-to-Impact system using $CAFI (CarbonFi Token).
+- CarbonFi Partnership : Real-world carbon offset verification linked to in-game missions.
+- DAO Governance : Community-led decisions for future updates.
+
+---
+
+## ⚙️ Tech Stack
+
+| Layer | Technology |
+|-------|-------------|
+| Frontend | [v0.dev (Vercel)](https://v0.dev) |
+| Backend | [Replit + Express.js](https://replit.com) |
+| Smart Contracts | [Remix IDE (Solidity)](https://remix.ethereum.org) |
+| Storage | [Pinata IPFS](https://www.pinata.cloud) |
+| Blockchain | Sepolia Ethereum Testnet Network (ERC-1155 Standard) |
+
+---
+
+## 🧠 Project Architecture
+
+SavePoint: Earth is structured to support modular development, scalability, and seamless Web3 integration.  
+Each core layer handles a specific function — from frontend interaction to blockchain asset management — allowing the project to evolve rapidly while maintaining clarity and performance.
